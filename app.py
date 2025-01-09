@@ -143,3 +143,62 @@ def create_blog(current_user):
             "message": "Please provide all required fields"
         }, 400
     )
+
+@app.route("/blogs/<id>", methods=["PUT"])
+@token_required
+def update_blog(current_user, id):
+    data = request.json
+    title = data.get("title")
+    content = data.get("content")
+
+    blog = Blogs.query.filter_by(id=id).first()
+    if blog:
+        blog.title = title
+        blog.content = content
+        db.session.commit()
+        return make_response(
+            {
+                "message": "Blog updated successfully"
+            }, 200
+        )
+    return make_response(
+        {
+            "message": "Blog not found"
+        }, 404
+    )
+
+
+@app.route("/blogs/<id>", methods=["GET"])
+@token_required
+def get_blog(current_user, id):
+    blog = Blogs.query.filter_by(id=id, user_id=current_user.id).first()
+    if not blog:
+        return make_response(
+            {
+                "message": "Blog not found"
+            }, 404
+        )
+    
+    return make_response(
+        {
+            "blog": blog.serialize
+        }, 200
+    )
+
+@app.route("/blogs/<id>", methods=["DELETE"])
+@token_required
+def delete_blog(current_user, id):
+    blog = Blogs.query.filter_by(id=id).first()
+    if blog:
+        db.session.delete(blog)
+        db.session.commit()
+        return make_response(
+            {
+                "message": "Blog deleted successfully"
+            }, 200
+        )
+    return make_response(
+        {
+            "message": "Blog not found"
+        }, 404
+    )
