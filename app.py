@@ -202,3 +202,13 @@ def delete_blog(current_user, id):
             "message": "Blog not found"
         }, 404
     )
+
+
+@app.route("/logout", methods=["POST"])
+@token_required
+def logout(current_user):
+     return make_response(
+        {
+            "message": "Successfully logged out"
+        }, 200
+    )
