@@ -1,35 +1,14 @@
-here is a step-by-step guide to set up and document your Flask API with JWT authentication and CRUD operations for blogs.
+Blog REST API
+A simple Blog REST API built with Flask and SQLAlchemy that supports user authentication, CRUD operations for blog posts, and pagination.
 
-Step 1: Set Up Your Environment
-Create a virtual environment:
-python3 -m venv venv
-
-Activate the virtual environment:
-source venv/bin/activate
-
-Install required packages:
-
-pip install flask flask_sqlalchemy flask_migrate psycopg2-binary
-
-
-Step 2: Initialize Your Flask Application
-Create the project structure:
-
-BLOG-API/
-├── app.py
-├── models.py
-├── __init__.py
-├── config.py
-├── migrations/
-└── venv/
-
-Step 3: Initialize the Database
-Initialize the migration directory:
-flask shell
-->db.create_all()
- 
-
-Step 4: Test Your API with Postman
-Start your Flask application:
-
-
+Features
+User Authentication:
+Registration
+Login
+Logout
+Blog Post Management:
+Create, Read, Update, Delete (CRUD) blog posts
+Pagination API for displaying multiple blog posts
+Display all blog posts and a single blog post
+Built using Flask and SQLAlchemy ORM
+PostgreSQL support
