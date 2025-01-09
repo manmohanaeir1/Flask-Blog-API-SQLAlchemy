@@ -1,9 +1,11 @@
 from . import app , db
-from flask import request, make_response 
+from flask import request, jsonify, make_response 
 from .models import Users, Blogs
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime, timedelta
+
+from functools import wraps
 import jwt
 
 @app.route("/signup", methods=["POST"])
@@ -37,7 +39,7 @@ def signup():
               }, 201
          )
      
-       return make_response(
+    return make_response(
             {
                 "message": "Please provide all required fields"
             }, 400
@@ -72,11 +74,72 @@ def login():
             "HS256"
         )
 
-        return make_response({'token': token}, 201)
-        return make_response(
+        return make_response(jsonify({"token": token}), 200)
+     
+     return make_response(
+            {
+                "message": "Invalid password"
+            }, 401
+        )
+
+   
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+        if not token:
+            return make_response(
                 {
-                    "message": "Invalid password! Please try again"
+                    "message": "Token is missing!"
                 }, 401
             )
-     
-     
+        try:
+            data = jwt.decode(token, "secret", algorithms=["HS256"])
+            current_user = Users.query.filter_by(id=data['id']).first()
+        except:
+            return make_response(
+                {
+                    "message": "Token is invalid"
+                }, 401
+            )
+        return f(current_user, *args, **kwargs)
+    return decorated
+
+@app.route("/blogs", methods=["GET"])
+@token_required
+def get_blogs(current_user):
+    blogs = Blogs.query.filter_by(user_id=current_user.id).all()
+    return make_response(
+        {
+            "blogs": [blog.serialize for blog in blogs]
+        }, 200
+    )
+
+@app.route("/blogs", methods=["POST"])
+@token_required
+def create_blog(current_user):
+    data = request.json
+    title = data.get("title")
+    content = data.get("content")
+
+    if title and content:
+        blog = Blogs(
+            user_id=current_user.id,
+            title=title,
+            content=content
+        )
+        db.session.add(blog)
+        db.session.commit()
+        return make_response(
+            {
+                "message": "Blog created successfully"
+            }, 201
+        )
+    return make_response(
+        {
+            "message": "Please provide all required fields"
+        }, 400
+    )
