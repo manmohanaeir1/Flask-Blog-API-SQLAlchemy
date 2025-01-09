@@ -45,7 +45,7 @@ def signup():
     
         
        
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST"])  #thisis the login route
 def login():
      auth = request.json
      if not auth or not auth.get("email") or not auth.get("password"):
