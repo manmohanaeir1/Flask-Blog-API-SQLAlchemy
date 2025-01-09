@@ -56,6 +56,7 @@ A simple Blog REST API built with Flask and SQLAlchemy that supports user authen
 |----------------|--------|---------------------|-----------------------------------------------------------------|
 | `/posts`       | POST   | Create Blog Post    | `{"title": "New Post", "content": "This is a blog post."}`      |
 | `/posts`       | GET    | Get All Posts       | Query params: `?page=1&per_page=5`                              |
-| `/posts/1`     | GET    | Get Single Post     | `Show = post where id=1`                                        |
+| `/posts/1`     | GET    | Get Single Post     | None                                                            |
 | `/posts/1`     | PUT    | Update Blog Post    | `{"title": "Updated Title", "content": "Updated content."}`     |
-| `/posts/1`     | DELETE | Delete Blog Post    | `Deleted`  
+| `/posts/1`     | DELETE | Delete Blog Post    | None                                                            |
+| `/logout`      | POST   | User Logout         | None                                                            |
